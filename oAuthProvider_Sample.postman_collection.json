@@ -1,0 +1,95 @@
+{
+	"variables": [],
+	"info": {
+		"name": "oAuthProvider_Sample",
+		"_postman_id": "ad400382-446b-eef5-3061-a58e0a144b61",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create token password",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": "//Nesta aba eu to pegando o token e atribuindo a uma variável de ambiente\n//assim nas próximas requisições você só precisa colocar a variavel token no header\n\nvar jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"token\", jsonData.access_token);\npostman.setEnvironmentVariable(\"refresh_token\", jsonData.refresh_token);"
+					}
+				}
+			],
+			"request": {
+				"url": "http://localhost:5000/connect/token",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "username",
+							"value": "teste",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "password",
+							"value": "teste",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Values - Autenticado",
+			"request": {
+				"url": "http://localhost:5000/api/values",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"description": ""
+					}
+				],
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Values - Não autenticado, erro 401",
+			"request": {
+				"url": "http://localhost:5000/api/values",
+				"method": "GET",
+				"header": [],
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Values - Autenticado mas não tem a polícia necessária (admin), erro 403",
+			"request": {
+				"url": "http://localhost:5000/api/values/1",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"description": ""
+					}
+				],
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
